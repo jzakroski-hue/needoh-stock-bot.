@@ -51,6 +51,8 @@ def search_products():
         return data.get("data", {}).get("products", [])
 def main():
         products = search_products()
+        if products:
+        print("FIRST PRODUCT:", json.dumps(products[0], indent=2))
         message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
         print(message)
         # send_alert(message)
