@@ -46,7 +46,7 @@ def search_products():
         params = {"q": "Schylling NeeDoh", "country": "us", "stores": "amazon,walmart,target", "limit": 40}
         url = API_URL + "?" + urllib.parse.urlencode(params)
         req = urllib.request.Request(url, headers={"x-api-key": API_KEY})
-        with urllib.request.urlopen(req, timeout=30) as response
+        with urllib.request.urlopen(req, timeout=30) as response:
             data = json.load(response)
         return data.get("data", {}).get("products", [])
 def main():
