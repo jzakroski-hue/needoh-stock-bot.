@@ -27,7 +27,7 @@ def eligible(title):
     if any(word in name for word in EXCLUDED):
         return False
         if FUZZBALLS_RULE == "exclude_all" and ("fuzz" in name or "fuzzball" in name):
-        return False
+            return False
     return "needoh" in name or "nee doh" in name
 def get_price_limit(title):
     name = title.lower()
