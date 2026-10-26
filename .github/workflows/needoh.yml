@@ -18,9 +18,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      
-            - name: Run NeeDoh monitor
+          
+      - name: Run NeeDoh monitor
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python monitor.py
