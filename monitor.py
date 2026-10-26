@@ -40,21 +40,18 @@ def send_alert(message):
     with urllib.request.urlopen(req, timeout=20) as r:
         print("Notification HTTP status:", r.status)
 
+def search_products():
+        if not API_KEY:
+            raise RuntimeError("OpenWeb Ninja API key is missing")
+        params = {"q": "Schylling NeeDoh", "country": "us", "stores": "amazon,walmart,target", "limit": 40}
+    url = API_URL + "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={"x-api-key": API_KEY})
+    with urllib.request.urlopen(req, timeout=30) as response
+            data = json.load(response)
+    return data.get("data", {}).get("products", [])
 def main():
-    results = []
-    for store, query in SEARCHES.items():
-        url = (
-            "https://www.google.com/search?tbm=shop&q="
-            + urllib.parse.quote(query)
-        )
-        results.append(store + ": " + url)
-
-    message = (
-        "NeeDoh shopping searches are ready.\n"
-        "These links are NOT confirmed in-stock items.\n\n"
-        + "\n".join(results)
-        + "\n\nBudget: $300. Manual purchase only."
-    )
+        products = search_products()
+    message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
     print(message)
     # send_alert(message)
 
