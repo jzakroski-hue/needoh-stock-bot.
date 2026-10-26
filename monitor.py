@@ -55,7 +55,7 @@ def main():
         + "\n\nBudget: $300. Manual purchase only."
     )
     print(message)
-    send_alert(message)
+    # send_alert(message)
 
 if __name__ == "__main__":
     main()
