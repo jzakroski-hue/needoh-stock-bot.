@@ -5,6 +5,7 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 
 TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
+API_KEY = os.environ.get("OPENWEBNINJA_API_KEY", "")
 with open("products.json", "r", encoding="utf-8") as file:
     CONFIG = json.load(file)
 ZIP_CODE = CONFIG["zip_code"]
