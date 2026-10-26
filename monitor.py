@@ -10,6 +10,7 @@ with open("products.json", "r", encoding="utf-8") as file:
 ZIP_CODE = CONFIG["zip_code"]
 RADIUS_MILES = CONFIG["radius_miles"]
 EXCLUDED = CONFIG["excluded"]
+MAX_TOTAL_BUDGET = CONFIG["max_total_budget"]
 
 SEARCHES = {
     "Amazon": "site:amazon.com Schylling NeeDoh",
