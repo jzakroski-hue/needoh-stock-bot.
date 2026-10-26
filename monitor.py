@@ -13,7 +13,9 @@ ZIP_CODE = CONFIG["zip_code"]
 RADIUS_MILES = CONFIG["radius_miles"]
 EXCLUDED = CONFIG["excluded"]
 MAX_TOTAL_BUDGET = CONFIG["max_total_budget"]
-
+PRICE_LIMITS = CONFIG["price_limits"]
+DEFAULT_MAX_PRICE = CONFIG["default_max_price"]
+FUZZBALLS_RULE = CONFIG["fuzzballs_rule"]
 # SEARCHES = {
     # "Amazon": "site:amazon.com Schylling NeeDoh",
     # "Walmart": "site:walmart.com Schylling NeeDoh 21231",
@@ -24,10 +26,15 @@ def eligible(title):
     name = title.lower()
     if any(word in name for word in EXCLUDED):
         return False
-    if "fuzz" in name and "original fuzz" not in name:
+        if FUZZBALLS_RULE == "exclude_all" and ("fuzz" in name or "fuzzball" in name):
         return False
     return "needoh" in name or "nee doh" in name
-
+def get_price_limit(title):
+    name = title.lower()
+    for variety, limit in PRICE_LIMITS.items():
+        if variety in name:
+            return limit
+    return DEFAULT_MAX_PRICE
 def send_alert(message):
     if not TOPIC:
         raise RuntimeError("NTFY_TOPIC is missing")
