@@ -15,8 +15,8 @@ EXCLUDED = [
 
 SEARCHES = {
     "Amazon": "site:amazon.com Schylling NeeDoh",
-    "Walmart": "site:walmart.com Schylling NeeDoh",
-    "Target": "site:target.com Schylling NeeDoh"
+    "Walmart": "site:walmart.com Schylling NeeDoh 21231",
+    "Target": "site:target.com Schylling NeeDoh 21231"
 }
 
 def eligible(title):
