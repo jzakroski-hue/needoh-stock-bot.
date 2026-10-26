@@ -12,12 +12,12 @@ RADIUS_MILES = CONFIG["radius_miles"]
 EXCLUDED = CONFIG["excluded"]
 MAX_TOTAL_BUDGET = CONFIG["max_total_budget"]
 
-SEARCHES = {
-    "Amazon": "site:amazon.com Schylling NeeDoh",
-    "Walmart": "site:walmart.com Schylling NeeDoh 21231",
-    "Target": "site:target.com Schylling NeeDoh 21231"
-}
-
+# SEARCHES = {
+    # "Amazon": "site:amazon.com Schylling NeeDoh",
+    # "Walmart": "site:walmart.com Schylling NeeDoh 21231",
+    # "Target": "site:target.com Schylling NeeDoh 21231"
+#}
+SEARCHES = {}
 def eligible(title):
     name = title.lower()
     if any(word in name for word in EXCLUDED):
