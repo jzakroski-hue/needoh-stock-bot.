@@ -51,9 +51,9 @@ def search_products():
         return data.get("data", {}).get("products", [])
 def main():
         products = search_products()
-    message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
-    print(message)
-    # send_alert(message)
+        message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
+        print(message)
+        # send_alert(message)
 
 if __name__ == "__main__":
     main()
