@@ -5,7 +5,8 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 
 TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
-
+ZIP_CODE = "21231"
+RADIUS_MILES = 50
 EXCLUDED = [
     "nice cube", "dream drop", "gumdrop",
     "color changing", "color-changing",
