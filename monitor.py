@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 
 TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
 API_KEY = os.environ.get("OPENWEBNINJA_API_KEY", "")
+API_URL = "https://api.openwebninja.com/realtime-product-search/search"
 with open("products.json", "r", encoding="utf-8") as file:
     CONFIG = json.load(file)
 ZIP_CODE = CONFIG["zip_code"]
