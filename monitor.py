@@ -44,11 +44,11 @@ def search_products():
         if not API_KEY:
             raise RuntimeError("OpenWeb Ninja API key is missing")
         params = {"q": "Schylling NeeDoh", "country": "us", "stores": "amazon,walmart,target", "limit": 40}
-    url = API_URL + "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(url, headers={"x-api-key": API_KEY})
-    with urllib.request.urlopen(req, timeout=30) as response
+        url = API_URL + "?" + urllib.parse.urlencode(params)
+        req = urllib.request.Request(url, headers={"x-api-key": API_KEY})
+        with urllib.request.urlopen(req, timeout=30) as response
             data = json.load(response)
-    return data.get("data", {}).get("products", [])
+        return data.get("data", {}).get("products", [])
 def main():
         products = search_products()
     message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
