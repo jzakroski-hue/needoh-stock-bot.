@@ -1,0 +1,25 @@
+{
+  "zip_code": "21231",
+  "radius_miles": 50,
+  "stores": [
+    "Amazon",
+    "Walmart",
+    "Target"
+  ],
+  "check_online_shipping": true,
+  "check_local_pickup": true,
+  "max_price_rule": "normal_retail_or_less",
+  "max_total_budget": 300,
+  "quantity_per_product": 10,
+  "excluded": [
+    "nice cube",
+    "dream drop",
+    "gumdrop",
+    "color changing",
+    "color-changing",
+    "cool cats",
+    "mello mallo"
+  ],
+  "fuzzballs_rule": "original_only",
+  "notification_mode": "notify_only"
+}
