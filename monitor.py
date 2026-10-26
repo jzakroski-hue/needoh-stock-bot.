@@ -5,10 +5,10 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 
 TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
-ZIP_CODE = "21231"
-RADIUS_MILES = 50
 with open("products.json", "r", encoding="utf-8") as file:
     CONFIG = json.load(file)
+ZIP_CODE = CONFIG["zip_code"]
+RADIUS_MILES = CONFIG["radius_miles"]
 EXCLUDED = CONFIG["excluded"]
 
 SEARCHES = {
