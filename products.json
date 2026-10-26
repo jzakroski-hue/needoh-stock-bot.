@@ -20,6 +20,17 @@
     "cool cats",
     "mello mallo"
   ],
-  "fuzzballs_rule": "original_only",
-  "notification_mode": "notify_only"
+  "fuzzballs_rule": "exclude_all",
+  "notification_mode": "notify_only",
+  "default_max_price": 10,
+  "price_limits": {
+  "nice berg": 13,
+  "snow ball": 10,
+  "dohjees": 10,
+  "groovy fruit": 10,
+  "atomic": 10,
+  "bubble glob": 10,
+  "super needoh": 13,
+  "kittens": 10
+}
 }
