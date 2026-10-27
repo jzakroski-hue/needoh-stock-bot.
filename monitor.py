@@ -35,6 +35,22 @@ def get_price_limit(title):
         if variety in name:
             return limit
     return DEFAULT_MAX_PRICE
+def get_product_price(product):
+    price = product.get("price")
+    if price is None:
+        return None
+    try:
+        return float(str(price).replace("$", "").replace(",", "").strip())
+    except (ValueError, TypeError):
+        return None
+def price_is_eligible(product):
+    title = product.get("product_title", "")
+    if not eligible(title):
+        return False
+    price = get_product_price(product)
+    if price is None:
+        return False
+    return 0 < price <= get_price_limit(title)
 def send_alert(message):
     if not TOPIC:
         raise RuntimeError("NTFY_TOPIC is missing")
@@ -58,7 +74,7 @@ def search_products():
         return data.get("data", {}).get("products", [])
 def main():
         products = search_products()
-        products = [p for p in products if eligible(p.get("product_title", ""))]
+        products = [p for p in products if price_is_eligible(p)]
         print("Eligible products found:", len(products))
         print("FIRST PRODUCT:", json.dumps(products[0], indent=2))
         message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
