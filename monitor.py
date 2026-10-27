@@ -47,6 +47,18 @@ def price_is_eligible(product):
         return False
     return 0 < price <= get_price_limit(title)
 
+
+def stock_is_verified(product):
+    availability = str(
+        product.get("availability", "")
+    ).strip().lower()
+    return availability in (
+        "in_stock",
+        "in stock",
+        "instock"
+    )
+
+
 def send_alert(message):
     if not TOPIC:
         raise RuntimeError("NTFY_TOPIC is missing")
@@ -76,7 +88,8 @@ def main():
         message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
         print(message)
         # send_alert(message)
-        verified_stock = False
+        verified_stock = any(stock_is_verified(p) for p in products)
+
         for product in products:
             title = product.get("product_title", "")
             price = get_product_price(product)
