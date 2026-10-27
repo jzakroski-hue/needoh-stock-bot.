@@ -91,6 +91,8 @@ def main():
         verified_stock = any(stock_is_verified(p) for p in products)
 
         for product in products:
+            if not stock_is_verified(product):
+                continue
             title = product.get("product_title", "")
             price = get_product_price(product)
             store = product.get("store_name", "Unknown store")
