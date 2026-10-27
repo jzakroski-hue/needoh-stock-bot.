@@ -89,5 +89,6 @@ def main():
             link = product.get("product_page_url", "")
 
             print(f"Price match: {title} | ${price:.2f} | {store}")
+                    print(f"Shopping link: {link}")
 if __name__ == "__main__":
     main()
