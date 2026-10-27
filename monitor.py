@@ -76,6 +76,7 @@ def main():
         message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
         print(message)
         # send_alert(message)
+        verified_stock = False
         for product in products:
             title = product.get("product_title", "")
             price = get_product_price(product)
