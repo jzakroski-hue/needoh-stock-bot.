@@ -98,13 +98,13 @@ def main():
             store = product.get("store_name", "Unknown store")
             link = product.get("product_page_url", "")
  
-        direct_link = bool(
+            direct_link = bool(
             link.startswith(("https://", "http://"))
             and "google.com/search" not in link
-        )
-        print(f"Direct retailer link: {direct_link}")
-        print(f"Stock status: {product.get('availability', 'Not provided')}")
-        print(f"Price match: {title} | ${price:.2f} | {store}")
-        print(f"Shopping link: {link}")
+            )
+            print(f"Direct retailer link: {direct_link}")
+            print(f"Stock status: {product.get('availability', 'Not provided')}")
+            print(f"Price match: {title} | ${price:.2f} | {store}")
+            print(f"Shopping link: {link}")
 if __name__ == "__main__":
     main()
