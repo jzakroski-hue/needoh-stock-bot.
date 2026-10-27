@@ -96,6 +96,7 @@ def main():
             store = product.get("store_name", "Unknown store")
             link = product.get("product_page_url", "")
 
+            print(f"Stock status: {product.get('availability', 'Not provided')}")
             print(f"Price match: {title} | ${price:.2f} | {store}")
             print(f"Shopping link: {link}")
 if __name__ == "__main__":
