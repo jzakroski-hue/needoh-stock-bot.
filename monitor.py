@@ -83,11 +83,11 @@ def main():
         print(message)
         # send_alert(message)
         for product in products:
-        title = product.get("product_title", "")
-        price = get_product_price(product)
-        store = product.get("store_name", "Unknown store")
-        link = product.get("product_page_url", "")
+            title = product.get("product_title", "")
+            price = get_product_price(product)
+            store = product.get("store_name", "Unknown store")
+            link = product.get("product_page_url", "")
 
-        print(f"Price match: {title} | ${price:.2f} | {store}")
+            print(f"Price match: {title} | ${price:.2f} | {store}")
 if __name__ == "__main__":
     main()
