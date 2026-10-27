@@ -1,110 +1,129 @@
 import json
 import os
-import urllib.request
+import re
+import urllib.error
 import urllib.parse
-import xml.etree.ElementTree as ET
+import urllib.request
+from decimal import Decimal, InvalidOperation
 
-TOPIC = os.environ.get("NTFY_TOPIC", "").strip()
+API_URL = "https://api.openwebninja.com/realtime-shopping-data"
 API_KEY = os.environ.get("OPENWEBNINJA_API_KEY", "")
-API_URL = "https://api.openwebninja.com/realtime-product-search/search"
-with open("products.json", "r", encoding="utf-8") as file:
-    CONFIG = json.load(file)
-ZIP_CODE = CONFIG["zip_code"]
-RADIUS_MILES = CONFIG["radius_miles"]
-EXCLUDED = CONFIG["excluded"]
-MAX_TOTAL_BUDGET = CONFIG["max_total_budget"]
-PRICE_LIMITS = CONFIG["price_limits"]
-DEFAULT_MAX_PRICE = CONFIG["default_max_price"]
-FUZZBALLS_RULE = CONFIG["fuzzballs_rule"]
-def eligible(title):
-    name = title.lower()
-    if any(word in name for word in EXCLUDED):
-        return False
-        if FUZZBALLS_RULE == "exclude_all" and ("fuzz" in name or "fuzzball" in name):
-            return False
-    return "needoh" in name or "nee doh" in name
-def get_price_limit(title):
-    name = title.lower()
-    for variety, limit in PRICE_LIMITS.items():
-        if variety in name:
-            return limit
-    return DEFAULT_MAX_PRICE
-def get_product_price(product):
-    price = product.get("price")
-    if price is None:
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
+
+
+def load_config():
+    with open("products.json", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def money(value):
+    if value is None or isinstance(value, bool):
+        return None
+    match = re.search(r"\d[\d,]*(?:\.\d+)?", str(value))
+    if not match:
         return None
     try:
-        return float(str(price).replace("$", "").replace(",", "").strip())
-    except (ValueError, TypeError):
+        return Decimal(match.group().replace(",", ""))
+    except InvalidOperation:
         return None
 
-def price_is_eligible(product):
-    title = product.get("product_title", "")
-    if not eligible(title):
+
+def eligible_title(title, cfg):
+    name = str(title or "").casefold()
+    if not ("needoh" in name or "nee doh" in name):
         return False
-    price = get_product_price(product)
-    if price is None:
+    if any(str(word).casefold() in name for word in cfg.get("excluded", [])):
         return False
-    return 0 < price <= get_price_limit(title)
+    # Always exclude regular/original Fuzz Balls, irrespective of other rules.
+    if "fuzz ball" in name or "fuzzball" in name:
+        return False
+    return True
 
 
-def stock_is_verified(product):
-    availability = str(
-        product.get("availability", "")
-    ).strip().lower()
-    return availability in (
-        "in_stock",
-        "in stock",
-        "instock"
-    )
+def price_limit(title, cfg):
+    name = title.casefold()
+    for variety, limit in cfg.get("price_limits", {}).items():
+        if str(variety).casefold() in name:
+            return money(limit)
+    return money(cfg.get("default_max_price", 10))
 
 
-def send_alert(message):
-    if not TOPIC:
-        raise RuntimeError("NTFY_TOPIC is missing")
-    req = urllib.request.Request(
-        "https://ntfy.sh/" + TOPIC,
-        data=message.encode("utf-8"),
-        headers={"Title": "NeeDoh Shopping Results"},
-        method="POST"
-    )
-    with urllib.request.urlopen(req, timeout=20) as r:
-        print("Notification HTTP status:", r.status)
+def verified_stock(product):
+    # Only explicit positive inventory values count; missing status is unknown.
+    value = str(product.get("availability") or "").strip().casefold()
+    return value in {"in_stock", "in stock", "instock"}
+
+
+def direct_product_url(product):
+    url = str(product.get("product_page_url") or "").strip()
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return ""
+    host = (parsed.hostname or "").casefold()
+    if host in {"google.com", "www.google.com", "shopping.google.com"} or host.endswith(".google.com"):
+        return ""
+    return url
+
 
 def search_products():
-        if not API_KEY:
-            raise RuntimeError("OpenWeb Ninja API key is missing")
-        params = {"q": "Schylling NeeDoh", "country": "us", "limit": 40}
-        url = API_URL + "?" + urllib.parse.urlencode(params)
-        req = urllib.request.Request(url, headers={"x-api-key": API_KEY})
-        with urllib.request.urlopen(req, timeout=30) as response:
-            data = json.load(response)
-        return data.get("data", {}).get("products", [])
-def main():
-        products = search_products()
-        products = [p for p in products if price_is_eligible(p)]
-        print("Eligible products found:", len(products))
-        print("FIRST PRODUCT:", json.dumps(products[0], indent=2))
-        message = f"NeeDoh API search returned {len(products)} products. Stock and prices are not yet verified."
-        print(message)
-        # send_alert(message)
-        verified_stock = any(stock_is_verified(p) for p in products)
+    if not API_KEY:
+        raise RuntimeError("OPENWEBNINJA_API_KEY secret is missing")
+    params = urllib.parse.urlencode({"q": "Schylling NeeDoh", "country": "us", "limit": 40})
+    req = urllib.request.Request(API_URL + "?" + params, headers={"x-api-key": API_KEY})
+    with urllib.request.urlopen(req, timeout=30) as response:
+        payload = json.load(response)
+    products = payload.get("data", {}).get("products", [])
+    if not isinstance(products, list):
+        raise RuntimeError("Unexpected shopping API response: products is not a list")
+    return products
 
-        for product in products:
-            if not stock_is_verified(product):
-                continue
-            title = product.get("product_title", "")
-            price = get_product_price(product)
-            store = product.get("store_name", "Unknown store")
-            link = product.get("product_page_url", "")
- 
-            direct_link = bool(
-            link.startswith(("https://", "http://"))
-            and "google.com/search" not in link
-            )
-            print(f"Direct retailer link: {direct_link}")
-            print(f"Stock status: {product.get('availability', 'Not provided')}")
-            print(f"Price match: {title} | ${price:.2f} | {store}")
-            print(f"Shopping link: {link}")
+
+def notify(message):
+    if not NTFY_TOPIC:
+        raise RuntimeError("NTFY_TOPIC secret is missing")
+    req = urllib.request.Request(
+        "https://ntfy.sh/" + urllib.parse.quote(NTFY_TOPIC, safe=""),
+        data=message.encode("utf-8"),
+        headers={"Title": "NeeDoh verified listing", "Tags": "shopping_cart"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=20) as response:
+        print("Notification status:", response.status)
+
+
+def main():
+    cfg = load_config()
+    listings = search_products()
+    print("Shopping listings returned:", len(listings))
+    candidates = []
+    unknown_stock = 0
+    for item in listings:
+        title = str(item.get("product_title") or "")
+        if not eligible_title(title, cfg):
+            continue
+        price = money(item.get("price"))
+        limit = price_limit(title, cfg)
+        if price is None or limit is None or not (Decimal("0") < price <= limit):
+            continue
+        if not verified_stock(item):
+            unknown_stock += 1
+            continue
+        url = direct_product_url(item)
+        if not url:
+            continue
+        candidates.append((title, price, item.get("store_name", "Unknown store"), url))
+
+    print("Price-qualified listings without explicit in-stock verification:", unknown_stock)
+    print("Verified listings with direct links:", len(candidates))
+    if not candidates:
+        print("No verified stock alerts. Search results alone do not prove availability.")
+        return
+    # Do not auto-buy. Notify only; store confirmation is still needed.
+    lines = ["NeeDoh listings reporting in-stock (confirm at retailer):"]
+    for title, price, store, url in candidates[:10]:
+        lines.append(f"{title} | ${price:.2f} | {store}\n{url}")
+    notify("\n\n".join(lines))
+
+
 if __name__ == "__main__":
     main()
