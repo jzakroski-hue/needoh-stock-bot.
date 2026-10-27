@@ -101,8 +101,8 @@ def main():
             and "google.com/search" not in link
         )
         print(f"Direct retailer link: {direct_link}")
-          print(f"Stock status: {product.get('availability', 'Not provided')}")
-            print(f"Price match: {title} | ${price:.2f} | {store}")
-            print(f"Shopping link: {link}")
+        print(f"Stock status: {product.get('availability', 'Not provided')}")
+        print(f"Price match: {title} | ${price:.2f} | {store}")
+        print(f"Shopping link: {link}")
 if __name__ == "__main__":
     main()
