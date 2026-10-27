@@ -16,12 +16,6 @@ MAX_TOTAL_BUDGET = CONFIG["max_total_budget"]
 PRICE_LIMITS = CONFIG["price_limits"]
 DEFAULT_MAX_PRICE = CONFIG["default_max_price"]
 FUZZBALLS_RULE = CONFIG["fuzzballs_rule"]
-# SEARCHES = {
-    # "Amazon": "site:amazon.com Schylling NeeDoh",
-    # "Walmart": "site:walmart.com Schylling NeeDoh 21231",
-    # "Target": "site:target.com Schylling NeeDoh 21231"
-#}
-SEARCHES = {}
 def eligible(title):
     name = title.lower()
     if any(word in name for word in EXCLUDED):
