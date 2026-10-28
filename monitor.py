@@ -49,10 +49,9 @@ def price_limit(title, cfg):
 
 
 def verified_stock(product):
-    # Only explicit positive inventory values count; missing status is unknown.
+    # Missing availability means stock is unconfirmed.
     value = str(product.get("availability") or "").strip().casefold()
     return value in {"in_stock", "in stock", "instock"}
-
 
 def direct_product_url(product):
     url = str(product.get("product_page_url") or "").strip()
