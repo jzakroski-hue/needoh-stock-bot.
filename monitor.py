@@ -6,7 +6,7 @@ import urllib.parse
 import urllib.request
 from decimal import Decimal, InvalidOperation
 
-API_URL = "https://api.openwebninja.com/realtime-shopping-data"
+API_URL = "https://api.openwebninja.com/realtime-product-search/v2/search"
 API_KEY = os.environ.get("OPENWEBNINJA_API_KEY", "")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
 
