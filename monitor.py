@@ -121,16 +121,16 @@ if listings:
             continue
         candidates.append((title, price, item.get("store_name", "Unknown store"), url))
 
-    print("Price-qualified listings without explicit in-stock verification:", unknown_stock)
-    print("Verified listings with direct links:", len(candidates))
-    if not candidates:
-        print("No verified stock alerts. Search results alone do not prove availability.")
-        return
-    # Do not auto-buy. Notify only; store confirmation is still needed.
-    lines = ["NeeDoh listings reporting in-stock (confirm at retailer):"]
-    for title, price, store, url in candidates[:10]:
-        lines.append(f"{title} | ${price:.2f} | {store}\n{url}")
-    notify("\n\n".join(lines))
+        print("Price-qualified listings without explicit in-stock verification:", unknown_stock)
+        print("Verified listings with direct links:", len(candidates))
+        if not candidates:
+            print("No verified stock alerts. Search results alone do not prove availability.")
+            return
+        # Do not auto-buy. Notify only; store confirmation is still needed.
+        lines = ["NeeDoh listings reporting in-stock (confirm at retailer):"]
+        for title, price, store, url in candidates[:10]:
+            lines.append(f"{title} | ${price:.2f} | {store}\n{url}")
+        notify("\n\n".join(lines))
 
 
 if __name__ == "__main__":
