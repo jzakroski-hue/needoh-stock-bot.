@@ -71,9 +71,9 @@ def search_products():
     params = urllib.parse.urlencode({"q": "Schylling NeeDoh", "country": "us", "limit": 40})
     req = urllib.request.Request(API_URL + "?" + params, headers={"x-api-key": API_KEY})
     try:
-    with urllib.request.urlopen(req, timeout=30) as response:
+        with urllib.request.urlopen(req, timeout=30) as response:
         payload = json.load(response)
-except urllib.error.HTTPError as e:
+    except urllib.error.HTTPError as e:
     print("Shopping API HTTP error:", e.code)
     print("API response:", e.read().decode("utf-8", errors="replace")[:1500])
     raise
