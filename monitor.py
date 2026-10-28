@@ -70,8 +70,13 @@ def search_products():
         raise RuntimeError("OPENWEBNINJA_API_KEY secret is missing")
     params = urllib.parse.urlencode({"q": "Schylling NeeDoh", "country": "us", "limit": 40})
     req = urllib.request.Request(API_URL + "?" + params, headers={"x-api-key": API_KEY})
+    try:
     with urllib.request.urlopen(req, timeout=30) as response:
         payload = json.load(response)
+except urllib.error.HTTPError as e:
+    print("Shopping API HTTP error:", e.code)
+    print("API response:", e.read().decode("utf-8", errors="replace")[:1500])
+    raise
     products = payload.get("data", {}).get("products", [])
     if not isinstance(products, list):
         raise RuntimeError("Unexpected shopping API response: products is not a list")
