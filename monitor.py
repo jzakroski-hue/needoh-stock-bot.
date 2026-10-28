@@ -99,6 +99,9 @@ def notify(message):
 def main():
     cfg = load_config()
     listings = search_products()
+if listings:
+    print("Available product fields:", sorted(listings[0].keys()))
+
     print("Shopping listings returned:", len(listings))
     candidates = []
     unknown_stock = 0
