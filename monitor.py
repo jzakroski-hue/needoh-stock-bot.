@@ -103,6 +103,7 @@ def main():
 
     print("Shopping listings returned:", len(listings))
     candidates = []
+    shopping_leads = []
     unknown_stock = 0
     for item in listings:
         title = str(item.get("product_title") or "")
@@ -114,6 +115,9 @@ def main():
             continue
         if not verified_stock(item):
             unknown_stock += 1
+        url = direct_product_url(item)
+        if url:
+            shopping_leads.append((title, price, item.get("store_name", "Unknown store"), url))
             continue
         url = direct_product_url(item)
         if not url:
@@ -122,6 +126,8 @@ def main():
 
         print("Price-qualified listings without explicit in-stock verification:", unknown_stock)
         print("Verified listings with direct links:", len(candidates))
+        if shopping_leads:
+            print("Shopping leads found:", len(shopping_leads))
         if not candidates:
             print("No verified stock alerts. Search results alone do not prove availability.")
             return
