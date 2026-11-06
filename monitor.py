@@ -128,15 +128,15 @@ def main():
         print("Verified listings with direct links:", len(candidates))
         if shopping_leads:
             print("Shopping leads found:", len(shopping_leads))
-        if not candidates:
+        if not candidates and not shopping_leads:
             print("No verified stock alerts. Search results alone do not prove availability.")
             return
         # Do not auto-buy. Notify only; store confirmation is still needed.
         lines = ["NeeDoh listings reporting in-stock (confirm at retailer):"]
         for title, price, store, url in candidates[:10]:
             lines.append(f"{title} | ${price:.2f} | {store}\n{url}")
+        lines.extend(f"STOCK NOT VERIFIED: {title} | ${price} | {store} | {url}" for title, price, store, url in shopping_leads)
         notify("\n\n".join(lines))
-
 
 if __name__ == "__main__":
     main()
